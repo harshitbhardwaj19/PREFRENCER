@@ -6,6 +6,9 @@
 using namespace std;
 
 void menu();
+void Merge(vector<string> &a, int low, int high, int mid);
+void MergeSort(vector<string> &a, int low, int high);
+
 
 class inventor
 {
@@ -123,11 +126,11 @@ void menu()
     cin>>choice;
 
     system("cls");
-    /*switch(choice)
+    switch(choice)
     {
-        case 1:new_acc();
+        case 1:customer_order();
         break;
-        case 2:edit();
+        /*case 2:edit();
         break;
         case 3:transact();
         break;
@@ -138,9 +141,9 @@ void menu()
         case 6:view_list();
         break;
         case 7:close();
-        break;
+        break;*/
 
-    }*/
+    }
 
 }
 
@@ -200,3 +203,59 @@ void inventor::login()
     Plogin();
 }
 
+void MergeSort(vector<string> &a, int low, int high)
+{
+	int mid;
+	if (low < high)
+	{
+		mid=(low+high)/2;
+		MergeSort(a, low, mid);
+		MergeSort(a, mid+1, high);
+
+		Merge(a, low, high, mid);
+	}
+}
+
+void Merge(vector<string> &a, int low, int high, int mid)
+{
+	int i, j, k;
+	i = low;
+	k = 0;
+	j = mid + 1;
+	vector<string> temp(high-low+1);
+
+	while (i <= mid && j <= high)
+	{
+		if (a[i] < a[j])
+		{
+			temp[k] = a[i];
+			k++;
+			i++;
+		}
+		else
+		{
+			temp[k] = a[j];
+			k++;
+			j++;
+		}
+	}
+
+	while (i <= mid)
+	{
+		temp[k] = a[i];
+		k++;
+		i++;
+	}
+
+	while (j <= high)
+	{
+		temp[k] = a[j];
+		k++;
+		j++;
+	}
+
+	for (i = low; i <= high; i++)
+	{
+		a[i] = temp[i-low];
+	}
+}
