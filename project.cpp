@@ -52,8 +52,86 @@ private :
     return amount;
     }
 
+    void Pedit()
+    {
+        int choice,test=0,n;
+        ifstream inold;
+        ofstream outnew;
+
+        inold.open("product_amount.txt");
+        outnew.open("new.txt",ios_base::app);
+
+        cout<<"\t\tHow many elements you want to change\n\t\t";
+        cin>>n;
+        vector<string> products(n);
+        vector<int> price(n);
+
+        cout<<"\t\tPRODUCT\t"<<"PRICE\n";
+        for(int i=0;i<n;i++)
+        {
+            cout<<"\t\t";
+            cin>>products[i]>>price[i];
+        }
+        MergeSort(products,price, 0, n-1);
+        system("cls");
+
+        int i=0,flag3=1;
+        details add;
+        while(inold >> add.product >>add.rs)
+        {
+            if(flag3!=0)
+            {
+                if (products[i]==add.product)
+                {
+                    add.rs=price[i];
+                    cout<<"\t\t"<<products[i]<<" has been updated\n";
+                    i++;
+                }
+
+                if(i>=n)
+                    flag3=0;
+            }
+
+            if(flag3!=0)
+            {
+                if (products[i]<add.product)
+                {
+                    outnew<<products[i] <<" " <<price[i]<<"\n";
+                    cout<<"\t\t"<<products[i]<<" has been added\n";
+                    i++;
+                }
+
+                if(i>=n)
+                    flag3=0;
+            }
+
+
+            outnew<<add.product <<" " <<add.rs<<"\n";
+        }
+        if(i<n)
+        {
+            for(int j=i;j<n;j++)
+            {
+                outnew<<products[j] <<" " <<price[j]<<"\n";
+                cout<<"\t\t"<<products[j]<<" has been added\n";
+            }
+        }
+
+        inold.close();
+        outnew.close();
+
+        remove("product_amount.txt");
+        rename("new.txt","product_amount.txt");
+
+        cout<<"\t\tFor the main menu ";
+        system("pause");
+        menu();
+
+    }
+
 public :
     double amount_paid(vector<string> &bill,vector<int> &quantity,int low,int high);
+    void edit();
 
 };
 
@@ -174,7 +252,7 @@ public :
 
 };
 
-class prefrencer
+class preferencer
 {
 private :
     class Node
@@ -221,22 +299,23 @@ private :
         return(temp);
     }
 
-    void Preorder(Node *temp)
+    void Pinorder(Node *temp)
     {
         if( temp != NULL)
         {
+            Pinorder(temp->left);
+
             cout<<"\t";
             cout<<temp->E1<<" "<<temp->E2<<" "<<temp->val<<"\n";
-            Preorder(temp->left);
 
-            Preorder(temp->right);
+            Pinorder(temp->right);
         }
     }
 
 public:
     Node *root=NULL;
 
-    void insertE(vector<string> bill);
+    void insertE();
     void triverse();
 
 };
@@ -247,7 +326,7 @@ void menu()
     system("color F");
     cout<<"\t\t\t\tTHAPAR INVENTORY SYSTEM\n";
     cout<<"\t\t\t\xB2\xB2\xB2\xB2\xB2\xB2\xB2 WELCOME TO THE MAIN MENU \xB2\xB2\xB2\xB2\xB2\xB2\xB2\n";
-    cout<<"\t\t1.Customer order\n\t\t2.Edit rate list \n\t\t3.Prefrenser \n\t\t4.Exit\n\n\n\n\n\t\t Enter your choice:";
+    cout<<"\t\t1.Customer order\n\t\t2.Edit rate list \n\t\t3.Preferencer \n\t\t4.Exit\n\n\n\n\n\t\t Enter your choice:";
     cin>>choice;
 
     system("cls");
@@ -258,9 +337,12 @@ void menu()
             obj.customer_order();
         }
         break;
-        /*case 2:edit();
+        case 2:{
+            product_amount obj2;
+            obj2.edit();
+        }
         break;
-        case 3:insertE();
+        /*case 3:insertE();
         break;
         case 4: break;*/
 
@@ -274,15 +356,18 @@ int main(){
     int n,qcheck=1,h;
     string s;
     inventor obj;
-
+    product_amount obj2;
+    preferencer obj3;
     obj.login();
-
     /*obj.insertE(bill);
         obj.triverse();*/
 }
 
-void prefrencer::insertE(vector<string> bill)
+void preferencer::insertE()
 {
+    vector<string> bill;
+
+
     for (int i=0;i<bill.size();i++)
     {
         for (int j=i+1;j<bill.size();j++)
@@ -292,9 +377,9 @@ void prefrencer::insertE(vector<string> bill)
     }
 }
 
-void prefrencer::triverse()
+void preferencer::triverse()
 {
-    Preorder(root);
+    Pinorder(root);
 }
 
 void inventor::login()
@@ -312,6 +397,11 @@ double product_amount::amount_paid(vector<string> &bill,vector<int> &quantity,in
     double p;
     p=Pamount_paid(bill,quantity,low,high);
     return p;
+}
+
+void product_amount::edit()
+{
+    Pedit();
 }
 
 void MergeSort(vector<string> &a,vector<int> &b, int low, int high)
